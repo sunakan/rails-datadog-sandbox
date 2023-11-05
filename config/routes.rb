@@ -7,4 +7,5 @@ Rails.application.routes.draw do
   get '/', to: "hoge#root"
 
   get '/hoge', to: "hoge#hoge"
+  get '/hoge-error', to: "hoge#hoge_error"
 end

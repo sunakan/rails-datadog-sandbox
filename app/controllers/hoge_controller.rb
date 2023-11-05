@@ -8,4 +8,10 @@ class HogeController < ApplicationController
       result: 'ok'
     }
   end
+
+  def hoge_error
+    render json: {
+      result: 'ok'
+    }, status: 500
+  end
 end
