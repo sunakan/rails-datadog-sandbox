@@ -1,0 +1,35 @@
+---
+
+services:
+#  agent:
+#    image: gcr.io/datadoghq/agent:7
+#    ports:
+#      - '8125:8125/udp'
+#    environment:
+#      DD_API_KEY: '${DD_API_KEY}'
+#      DD_DOGSTATSD_NON_LOCAL_TRAFFIC: 'true'
+#      DD_SITE: 'ap1.datadoghq.com'
+#      DD_APM_ENABLED: 'true'
+#      DD_APM_NON_LOCAL_TRAFFIC: 'true'
+
+
+
+  dogstatsd:
+    # フルセットのagentだとローカルのコンテナ全部監視してしまうので、
+    # Railsアプリケーション観点で必要なdogstatsdだけ起動する。
+    image: datadog/dogstatsd:7.48.1
+    ports:
+      - '8125:8125/udp'
+    environment:
+      DD_SITE: 'ap1.datadoghq.com'
+      # https://app.datadoghq.com/account/settings#api
+      DD_API_KEY: '${DD_API_KEY}'
+      # ローカル環境で誰が起動してるか分かるように、
+      # dd-agentのホスト名をMacの環境変数USERから取得して設定する。
+      # 何も設定しないとDockerのコンテナIDになって誰か分からない。
+      # hostnameも取りたいが環境変数HOSTNAMEはMacだと設定されていないようなので 、
+      # とりあえず最低限ローカルであることが分かるようにlocalhostを明示しておく。
+      DD_HOSTNAME: '${USER}.localhost'
+      # ローカル環境ではメタデータを取得する権限が足りなくてエラーが出るので無効化
+      # ERROR | (host.go:168 in getCPUInfo) | failed to retrieve cpu info at init time
+      DD_ENABLE_METADATA_COLLECTION: 'false'
